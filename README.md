@@ -42,22 +42,64 @@ flowchart TD
     F --> G
 ```
 
-The last-36 switch selects the last 36 monthly returns after computing returns from prices. Annual estimates use monthly mean × 12, sample standard deviation × √12 and monthly correlations. The original comparison always uses all uploaded months under the same objective and reserve selections. Changing the window resets editable estimates to that window's values. Prices must be positive, complete, consecutive monthly observations with date first and 3–6 ticker columns. At least 61 prices supply 60 monthly returns. Historical means are estimates, not forecasts; annual scaling assumes independent months.
+The last-36 switch selects the last 36 monthly returns after computing returns from prices. Annual estimates use monthly mean × 12, sample standard deviation × √12 and monthly correlations. The original comparison always uses all uploaded months under the same objective and reserve selections. Changing the window resets editable estimates to that window's values. Prices must be positive, complete, consecutive monthly observations with date first and 3–6 ticker columns. At least 61 prices supply 60 monthly returns. Historical means are estimates, not forecasts; annual scaling assumes independent months. Select **Apex project** in the sidebar to load the committed prices with the 7% target and 0.25% annual cost assumption; Meridian remains the default training mode. The cost control applies equally to both comparison runs.
 
-## Project 2 mandate and required results — pending inputs
-The [Lab 13 mandate](https://github.com/llindali/lab13/blob/main/lab13.md) names Apex University Student Investment Fund Endowment Reserve, initial assets $50 million. Objective: CPI + 4.5% net of fees over rolling ten-year periods. Cash/Treasury buffer: $1.5 million, or 3% of initial assets. The numeric CPI assumption, fee adjustment, 3–6 funds and adjusted-price history have not been supplied. No market prices or personal-universe results are invented.
+## Project 2 — Apex mandate and chosen assumptions
+Client: Apex University Student Investment Fund Endowment Reserve, fictional; $50 million initial assets. The original [Lab 13 mandate](https://github.com/llindali/lab13/blob/main/lab13.md) targets CPI + 4.5% net of fees over rolling ten-year periods and requires a $1.5 million cash/Treasury buffer.
 
-Required to finish this section: each ticker's source and download date; numeric net-return objective and reserve-eligible funds; all-month allocation, return, volatility and reserve; last-36-month equivalents; largest weight change (or honest infeasibility); the actual partner attack and two-sentence response; and a Project 2 adopt/pilot/reject call with a condition tied to the stress results.
+For this lab I choose **2.5% planning inflation**, giving a **7.0% net return objective**, and **0.25% annual operating/custody costs**. These are explicit modeling assumptions, not observed CPI or a quoted fee schedule. Each historical return estimate is reduced by 0.25 percentage point before searching. Fund-level expenses are already reflected in adjusted-price performance and are not deducted twice. The return target stays 7% in every run; no target is lowered to force feasibility. A historical arithmetic estimate exceeding 7% does not prove the ten-year net-return objective will be achieved.
 
-The app tests long-only, return and reserve conditions. Apex's separate 5% issuer constraint still needs issuer aggregation, exemptions and fund look-through treatment clarified before overall mandate compliance can be established. Uploaded historical total returns are gross of operational/custodial costs unless the editable return estimates are adjusted for those costs.
+| Fund | Role | Reserve eligible? | Fund description |
+|---|---|---|---|
+| SGOV | Short Treasury reserve | Yes | [iShares 0–3 Month Treasury Bond ETF](https://www.ishares.com/us/products/314116/ishares-0-3-month-treasury-bond-etf) |
+| BND | Broad U.S. investment-grade bonds | No | [Vanguard Total Bond Market ETF](https://advisors.vanguard.com/investments/products/bnd/vanguard-total-bond-market-etf) |
+| VT | Global equities | No | [Vanguard Total World Stock ETF](https://advisors.vanguard.com/investments/products/vt/vanguard-total-world-stock-etf) |
 
-## Training call
-**Pilot** the Meridian mix: a one-point reduction in the equity estimate moves 25 points into equity and raises volatility from 9.44% to 12.94%. Adoption would require defensible return estimates, acceptable stability across windows and stresses, and clarification of the client's loss rule. This training call does not substitute for the pending Apex decision.
+Hard constraint modeled: **at least 3% in SGOV**, plus fully invested, long-only weights. With 5-point search steps, the smallest positive reserve is 5%. For the learning mandate, I choose to exempt U.S. Treasury exposure and diversified fund vehicles from the direct corporate-issuer 5% cap; direct holdings of any other corporate issuer would be aggregated across debt and equity. There are no direct corporate securities in this fund universe. This explicitly selected interpretation is not a representation that the client approved it and is not a look-through concentration check. Adoption requires client confirmation or a holdings-based look-through test. The 70% MSCI World / 30% Bloomberg Aggregate benchmark remains the mandate's performance reference; VT is a broader global-stock exposure, not an exact MSCI World replica. No unapproved tracking-error cap is added.
+
+## Prices and sources
+Downloaded **October 22, 2026**, from Yahoo Finance's chart endpoint using the `Adj Close` field on daily observations, then taking the final available trading observation in each calendar month. Dates in `prices.csv` label calendar month-end. All funds are USD. There are **61 monthly prices, September 2021–September 2026**, supplying **60 returns, October 2021–September 2026**. October 2026 is excluded as incomplete. The last-36-month run uses **October 2023–September 2026 returns** and their September 2023 starting price. No missing months, forward fills or fabricated prices.
+
+| Ticker | Historical-price source | Download date |
+|---|---|---|
+| SGOV | [Yahoo Finance adjusted daily series](https://query1.finance.yahoo.com/v8/finance/chart/SGOV?period1=1630454400&period2=1790812800&interval=1d&events=div%2Csplits) | 2026-10-22 |
+| BND | [Yahoo Finance adjusted daily series](https://query1.finance.yahoo.com/v8/finance/chart/BND?period1=1630454400&period2=1790812800&interval=1d&events=div%2Csplits) | 2026-10-22 |
+| VT | [Yahoo Finance adjusted daily series](https://query1.finance.yahoo.com/v8/finance/chart/VT?period1=1630454400&period2=1790812800&interval=1d&events=div%2Csplits) | 2026-10-22 |
+
+These are vendor-adjusted prices as downloaded on that date, not an archived point-in-time vintage. Future vendor revisions may change the series. All calculations below use the committed `prices.csv`.
+
+## Estimates and stability — calculated from prices.csv
+All returns below are annual arithmetic **estimates**, not forecasts. Net estimates deduct the chosen operating/custody cost.
+
+| Fund | 60-month net return estimate | 60-month volatility | 36-month net return estimate | 36-month volatility |
+|---|---:|---:|---:|---:|
+| SGOV | 3.47% | 0.50% | 4.19% | 0.21% |
+| BND | −0.67% | 6.45% | 3.85% | 5.50% |
+| VT | 11.65% | 14.92% | 20.00% | 11.71% |
+
+| Run | SGOV / BND / VT (%) | Net return estimate | Volatility | Reserve weight | Reserve value at initial $50M |
+|---|---|---:|---:|---:|---:|
+| All 60 months | 55 / 0 / 45 | 7.15% | 6.77% | 55.00% | $27.5M |
+| Last 36 months | 80 / 0 / 20 | 7.35% | 2.37% | 80.00% | $40.0M |
+| All months; VT estimate reduced by 1 point | 50 / 0 / 50 | 7.06% | 7.51% | 50.00% | $25.0M |
+
+Both window allocations sum to 100%, contain no negative weights, meet the unchanged 7% estimated net-return objective and exceed the $1.5M buffer. Direct non-exempt corporate holdings are zero under the selected cap interpretation. These tests do not establish future performance, look-through concentration or client approval.
+
+**Largest window-driven weight change: 25 percentage points** (SGOV 55% → 80%, VT 45% → 20%). BND receives zero weight in both windows; for these estimates, SGOV offers a higher mean and much lower standalone volatility, and the exhaustive grid search finds no bond-containing mix with lower volatility at the target. The recent equity estimate is much higher, so less equity is needed to clear 7%; that does not make the recent estimate more credible. The one-point VT stress shifts **5 points** into equity and raises volatility from 6.77% to 7.51%. All searches use unrounded estimates.
+
+### Additional AI stress — not a partner interaction
+I reduced the all-month VT net estimate from 11.6452% to 10.6452%, which shifted the allocation from 55% SGOV / 45% VT to 50% SGOV / 50% VT while preserving the 7% target. The larger 25-point window sensitivity shows that my starting allocation depends materially on the estimation period, even though the one-point stress moves only 5 points.
+
+The actual partner attack and its two-sentence response will be added after class; the AI stress above does not substitute for that required interaction.
+
+## Project 2 call
+**Pilot the all-month mix as the Project 2 starting allocation**, rather than adopt it for real assets: changing the estimation window reallocates 25 points and the recent VT return estimate is unusually strong relative to the full window. I would reconsider adoption only if independently justified forward-looking estimates and alternative windows/stresses keep the largest allocation shift within a chosen 10-point tolerance, while the net target and reserve remain satisfied, and the client confirms the fee and issuer-cap assumptions. Otherwise I would reject this optimizer output as an implementation allocation and revise the estimation approach without lowering the mandate objective.
 
 ## Submission files
 - [Written work](README.md)
 - [Risk engine](portfolio.py)
 - [Streamlit app](app.py)
+- [Monthly adjusted prices](prices.csv)
 - [Dependencies](requirements.txt)
 
 Source: [Lab 15 instructions](https://github.com/CinderZhang/FIN43900-Fall2026/blob/main/lessons/week-09/lab-15-portfolio-stability.md). AI assisted implementation, validation and written analysis. Class activities are performed in class; no partner interaction is claimed here.
