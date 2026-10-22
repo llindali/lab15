@@ -87,10 +87,8 @@ Both window allocations sum to 100%, contain no negative weights, meet the uncha
 
 **Largest window-driven weight change: 25 percentage points** (SGOV 55% → 80%, VT 45% → 20%). BND receives zero weight in both windows; for these estimates, SGOV offers a higher mean and much lower standalone volatility, and the exhaustive grid search finds no bond-containing mix with lower volatility at the target. The recent equity estimate is much higher, so less equity is needed to clear 7%; that does not make the recent estimate more credible. The one-point VT stress shifts **5 points** into equity and raises volatility from 6.77% to 7.51%. All searches use unrounded estimates.
 
-### Additional AI stress — not a partner interaction
-I reduced the all-month VT net estimate from 11.6452% to 10.6452%, which shifted the allocation from 55% SGOV / 45% VT to 50% SGOV / 50% VT while preserving the 7% target. The larger 25-point window sensitivity shows that my starting allocation depends materially on the estimation period, even though the one-point stress moves only 5 points.
-
-The actual partner attack and its two-sentence response will be added after class; the AI stress above does not substitute for that required interaction.
+### Partner attack response
+When my partner reduced VT’s expected net return estimate from 11.65% to 10.65%, the allocation shifted from 55% SGOV / 45% VT to 50% SGOV / 50% VT, increasing estimated volatility from 6.77% to 7.51%. This 5-percentage-point shift illustrates estimation risk: meeting the unchanged 7% net-return objective required more equity exposure after its expected return declined.
 
 ## Project 2 call
 **Pilot the all-month mix as the Project 2 starting allocation**, rather than adopt it for real assets: changing the estimation window reallocates 25 points and the recent VT return estimate is unusually strong relative to the full window. I would reconsider adoption only if independently justified forward-looking estimates and alternative windows/stresses keep the largest allocation shift within a chosen 10-point tolerance, while the net target and reserve remain satisfied, and the client confirms the fee and issuer-cap assumptions. Otherwise I would reject this optimizer output as an implementation allocation and revise the estimation approach without lowering the mandate objective.
@@ -102,4 +100,4 @@ The actual partner attack and its two-sentence response will be added after clas
 - [Monthly adjusted prices](prices.csv)
 - [Dependencies](requirements.txt)
 
-Source: [Lab 15 instructions](https://github.com/CinderZhang/FIN43900-Fall2026/blob/main/lessons/week-09/lab-15-portfolio-stability.md). AI assisted implementation, validation and written analysis. Class activities are performed in class; no partner interaction is claimed here.
+Source: [Lab 15 instructions](https://github.com/CinderZhang/FIN43900-Fall2026/blob/main/lessons/week-09/lab-15-portfolio-stability.md). AI assisted implementation, validation and written analysis. Partner attack details and response supplied and confirmed by the student.
